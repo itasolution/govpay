@@ -5,6 +5,12 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.certificate.Certificate;
+import org.openspcoop2.utils.certificate.CertificateDecodeConfig;
+import org.openspcoop2.utils.certificate.CertificateInfo;
+import org.openspcoop2.utils.certificate.CertificatePrincipal;
+import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.slf4j.Logger;
 
 import it.govpay.core.utils.GovpayConfig;
@@ -31,13 +37,13 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 	
 	@Override
 	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
-		Object headerValue = super.getPreAuthenticatedPrincipal(request);
+		String headerValue = request.getHeader(this.getPrincipalHeaderName());
 		this.logConfigurazione();
 		log.debug("Letto Principal: ["+headerValue+"]");
 		return decodePrincipal(headerValue);
 	}
 	
-	private Object decodePrincipal(Object headerValue) {
+	private String decodePrincipal(String headerValue) {
 		boolean urlDecode = this.getPropertyBooleanValue(GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_URL_DECODE));
 		boolean base64Decode = this.getPropertyBooleanValue(GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_BASE64_DECODE));
 		boolean translateTabNewLine = this.getPropertyBooleanValue(GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_TRANSLATE_TAB_NEW_LINE));
@@ -46,6 +52,19 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 		if(!decodeHeader)
 			return headerValue;
 		
+		CertificateDecodeConfig config = new CertificateDecodeConfig();
+		config.setBase64Decode(base64Decode);
+		config.setUrlDecode(urlDecode);
+		config.setReplace(translateTabNewLine);
+		
+		try {
+			Certificate certificate = CertificateUtils.readCertificate(config , headerValue);
+			CertificateInfo certificateInfo = certificate.getCertificate();
+			CertificatePrincipal subject = certificateInfo.getSubject();
+			return subject.toString();
+		} catch (UtilsException e) {
+			log.error("Errore durante la decodifica del valore contenuto nell'header: " + e.getMessage(), e);
+		}
 		
 		return headerValue;
 	}
