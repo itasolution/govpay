@@ -17,7 +17,6 @@ import it.govpay.core.utils.GovpayConfig;
 
 public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authentication.preauth.filter.HeaderPreAuthFilter {
 	
-	public static final String AUTENTICAZIONE_SSL_HEADER_DECODE_HEADER = "decodeHeader";
 	public static final String AUTENTICAZIONE_SSL_HEADER_TRANSLATE_TAB_NEW_LINE = "translateTabNewLine";
 	public static final String AUTENTICAZIONE_SSL_HEADER_BASE64_DECODE = "base64Decode";
 	public static final String AUTENTICAZIONE_SSL_HEADER_URL_DECODE = "urlDecode";
@@ -47,10 +46,6 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 		boolean urlDecode = this.getPropertyBooleanValue(GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_URL_DECODE));
 		boolean base64Decode = this.getPropertyBooleanValue(GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_BASE64_DECODE));
 		boolean translateTabNewLine = this.getPropertyBooleanValue(GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_TRANSLATE_TAB_NEW_LINE));
-		boolean decodeHeader = this.getPropertyBooleanValue(GovpayConfig.getInstance().getAutenticazioneSSLHeaderProperties().getProperty(AUTENTICAZIONE_SSL_HEADER_DECODE_HEADER));
-		
-		if(!decodeHeader)
-			return headerValue;
 		
 		CertificateDecodeConfig config = new CertificateDecodeConfig();
 		config.setBase64Decode(base64Decode);
@@ -81,7 +76,6 @@ public class SSLHeaderPreAuthFilter extends org.openspcoop2.utils.service.authen
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("Lettura delle informazioni del certificato dall'header ["+ autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_NOME_HEADER) +"]:");
-		sb.append("\nDecodifica Contenuto Header ["+ autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_DECODE_HEADER) +"]");
 		sb.append("\nURL Decode ["+ autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_URL_DECODE) +"]");
 		sb.append("\nBase64 Decode ["+ autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_BASE64_DECODE) +"]");
 		sb.append("\nTranslate TabNewLine ["+ autenticazioneSSLHeaderProperties.getProperty(AUTENTICAZIONE_SSL_HEADER_TRANSLATE_TAB_NEW_LINE) +"]");
