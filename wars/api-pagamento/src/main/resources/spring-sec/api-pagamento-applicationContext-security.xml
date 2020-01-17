@@ -68,7 +68,7 @@
         </http>
 		<!-- SSL_END -->
         
-		<!-- SPID_START
+		<!-- SPID_START -->
         <b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
         <b:bean id="userDetailServiceUtenzeCit" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeCittadinoDAO" >
@@ -90,10 +90,12 @@
                 <b:property name="authenticationManager" ref="authenticationManagerCit" />
                 <b:property name="exceptionIfHeaderMissing" value="false" />
                 <b:property name="authenticationDetailsSource">
-        		<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource"/>
-        	</b:property>
+        			<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource"/>
+        		</b:property>
+        		<b:property name="authenticationSuccessHandler" ref="authenticationSuccessHandlerCit" />
         </b:bean>
         <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+         <b:bean id="authenticationSuccessHandlerCit" class="it.govpay.rs.v1.authentication.handler.RedirectAuthenticationSuccessHandler" />
         
         <b:bean id="invalidSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedInvalidSessionStrategy">
         	<b:property name="createNewSession" value="false" />
@@ -111,7 +113,7 @@
                 
                 <logout logout-url="/rs/spid/v1/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
                 
-                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategy">
+                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategy" >
                 	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategy" />
 	       		</session-management>
 
@@ -142,7 +144,23 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-		SPID_END -->
+        
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/cookie/v1/**" >
+
+                <csrf/>
+                
+                <intercept-url pattern="/rs/cookie/v1/**" access="isFullyAuthenticated()"  />
+                <custom-filter ref="" position="CSRF_FILTER"/>
+                
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+<!-- 		SPID_END -->
         
         <!-- PUBLIC_START
         <b:bean id="http403ForbiddenEntryPointPublic" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
