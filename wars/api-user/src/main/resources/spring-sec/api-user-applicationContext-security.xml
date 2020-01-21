@@ -54,7 +54,6 @@
                 <b:property name="authenticationDetailsSource">
         			<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource"/>
         		</b:property>
-        		<b:property name="authenticationSuccessHandler" ref="authenticationSuccessHandlerSPID" />
         </b:bean>
         <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
         <b:bean id="authenticationSuccessHandlerSPID" class="it.govpay.user.v1.authentication.handler.RedirectAuthenticationSuccessHandler" >

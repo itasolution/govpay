@@ -16,17 +16,15 @@ tags:
 security:
   - basicAuth: []
 paths:
-  '/login':
+  '/login/{urlID}':
     get:
       summary: Login
       operationId: login
       tags:
         - Utenti
       parameters:
-        - $ref: '#/components/parameters/redirectURL'
+        - $ref: '#/components/parameters/urlID'
       responses:
-        '200':
-          $ref: '#/components/responses/200Ok'
         '303':
           $ref: '#/components/responses/303SeeOther'
         '400':
@@ -35,6 +33,8 @@ paths:
           $ref: '#/components/responses/401NotAuthenticated'
         '403':
           $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
         '503':
           $ref: '#/components/responses/500ServiceUnavailable'
 components:
@@ -43,11 +43,11 @@ components:
       type: http
       scheme: basic
   parameters:
-    redirectURL:
-      name: redirectURL
-      in: query
-      description: URL dove si viene indirizzati al completamento della procedura di login
-      required: false
+    urlID:
+      name: urlID
+      in: path
+      description: Identificativo della URL dove si viene indirizzati in caso di successo del login
+      required: true
       schema:
         type: string
   headers:
@@ -73,8 +73,6 @@ components:
         type: integer
         format: int32
   responses:
-    '200Ok':
-      description: Richiesta completata con successo
     '303SeeOther':
       description: Richiesta completata con redirect
     '400BadRequest':
