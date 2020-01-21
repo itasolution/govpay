@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<jboss umlns="urn:jboss:1.0">  
+    <shared-session-config xmlns="urn:jboss:shared-session-config:1.0">  
+        <session-config>  
+            <session-timeout>${it.govpay.sharedSessionConfig.session.timeout}</session-timeout>  
+            <cookie-config>  
+                <path>${it.govpay.sharedSessionConfig.cookie.path}</path>  
+                <name>${it.govpay.sharedSessionConfig.cookie.name}</name>  
+				<domain>${it.govpay.sharedSessionConfig.cookie.domain}</domain>
+            </cookie-config>  
+        </session-config>  
+    </shared-session-config>  
+</jboss> 
