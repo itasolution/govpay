@@ -597,10 +597,10 @@ public class PendenzeDAO extends BaseDAO{
 				// validazione del path richiesto
 				this.validaPath(op.getPath());
 
-				// validazione del value
-				this.validaValue(op.getValue());
-
 				if(PATH_STATO.equals(op.getPath())) {
+					// validazione del value
+					this.validaValue(op.getValue());
+					
 					String motivazione = null;
 					//cerco il patch di descrizione stato
 					for(PatchOp op2: patchPendenzaDTO.getOp()) {
@@ -610,6 +610,9 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					this.patchStato(patchPendenzaDTO.getUser(), versamentoLetto, op, motivazione, bd);
 				} else if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
+					// validazione del value
+					this.validaValue(op.getValue());
+					
 					this.patchDescrizioneStato(versamentoLetto, op);
 				} else if(PATH_ACK.equals(op.getPath())) {
 					this.patchAck(versamentoLetto, op);
